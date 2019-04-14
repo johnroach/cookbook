@@ -1,0 +1,5 @@
+DEBUG: "false"
+DEPLOYMENT_TYPE: "dev"
+PORT: "8080"
+FIREBASE_HOST: "localhost"
+FIREBASE_PORT: "8700"
