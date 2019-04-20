@@ -25,11 +25,11 @@ spec:
             mountPath: /config
         readinessProbe:
           exec:
-            command: ["/bin/grpc_health_probe", "-addr=:8080"]
+            command: ["/go/bin/grpc_health_probe", "-addr=:8080"]
           initialDelaySeconds: 5
         livenessProbe:
           exec:
-            command: ["/bin/grpc_health_probe", "-addr=:8080"]
+            command: ["/go/bin/grpc_health_probe", "-addr=:8080"]
           initialDelaySeconds: 10
       volumes:
         - name: config-volume
