@@ -8,7 +8,7 @@ import (
 
 type HealthServer struct{}
 
-func(s *HealthServer) Check(ctx context.Context, in *health.HealthCheckRequest) (*health.HealthCheckResponse, error){
+func (s *HealthServer) Check(ctx context.Context, in *health.HealthCheckRequest) (*health.HealthCheckResponse, error) {
 	log.Debug("Health check requested")
 	return &health.HealthCheckResponse{Status: health.HealthCheckResponse_SERVING}, nil
 }

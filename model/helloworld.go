@@ -6,7 +6,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-
 type GreetingServer struct{}
 
 // SayHello implements helloworld.GreeterServer
