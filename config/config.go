@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/fsnotify/fsnotify"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -52,7 +53,12 @@ func Init(env string) error{
 		}})
 	}
 
+	// Allow hot reload of configuration
+	config.WatchConfig()
 
+	config.OnConfigChange(func(e fsnotify.Event) {
+		log.Infof("Config file reloaded for cookbook. %v", e.Name)
+	})
 
 	return nil
 }

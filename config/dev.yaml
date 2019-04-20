@@ -1,4 +1,4 @@
-DEBUG: "false"
+DEBUG: "true"
 DEPLOYMENT_TYPE: "dev"
 PORT: "8080"
 FIREBASE_HOST: "localhost"
