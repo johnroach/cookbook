@@ -1,6 +1,6 @@
 # cookbook
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/45fb61c8af604b7cb45679ad240fa4e0)](https://app.codacy.com/app/johnroach1985/cookbook?utm_source=github.com&utm_medium=referral&utm_content=johnroach/cookbook&utm_campaign=Badge_Grade_Dashboard) [![CodeFactor](https://www.codefactor.io/repository/github/johnroach/cookbook/badge)](https://www.codefactor.io/repository/github/johnroach/cookbook)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/45fb61c8af604b7cb45679ad240fa4e0)](https://app.codacy.com/app/johnroach1985/cookbook?utm_source=github.com&utm_medium=referral&utm_content=johnroach/cookbook&utm_campaign=Badge_Grade_Dashboard) [![CodeFactor](https://www.codefactor.io/repository/github/johnroach/cookbook/badge)](https://www.codefactor.io/repository/github/johnroach/cookbook) [![codecov](https://codecov.io/gh/johnroach/cookbook/branch/master/graph/badge.svg)](https://codecov.io/gh/johnroach/cookbook)
 
 ## Development
 

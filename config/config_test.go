@@ -10,6 +10,10 @@ func TestInit(t *testing.T) {
 	assert.NoError(t, Init("test"))
 }
 
+func TestUTCFormatter_Format(t *testing.T) {
+	assert.NoError(t, Init("test"))
+}
+
 func TestGetConfig(t *testing.T) {
 	os.Setenv("COOKBOOK_TESTING_ENV", "testing_env_setup")
 	Init("test")
