@@ -2,11 +2,11 @@
 
 ## Development
 
-Download and install https://github.com/protocolbuffers/protobuf/releases
+Download and install [protobuf](https://github.com/protocolbuffers/protobuf/releases)
 
 Run the following commands
 
-```
+```bash
 go get -u google.golang.org/grpc
 go get -u github.com/golang/protobuf/protoc-gen-go
 ```
