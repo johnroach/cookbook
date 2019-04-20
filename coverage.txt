@@ -1,0 +1,25 @@
+
+mode: atomic
+mode: atomic
+cookbook/config/config.go:17.28,26.16 9 2
+cookbook/config/config.go:38.2,41.35 3 2
+cookbook/config/config.go:45.2,45.48 1 2
+cookbook/config/config.go:57.2,59.47 2 2
+cookbook/config/config.go:63.2,63.12 1 2
+cookbook/config/config.go:26.16,29.3 2 0
+cookbook/config/config.go:41.35,43.3 1 0
+cookbook/config/config.go:45.48,49.3 1 0
+cookbook/config/config.go:49.8,54.3 1 2
+cookbook/config/config.go:59.47,61.3 1 0
+cookbook/config/config.go:67.31,69.2 1 1
+cookbook/config/config.go:72.60,75.2 2 0
+mode: atomic
+cookbook/model/health.go:11.119,14.2 2 1
+cookbook/model/helloworld.go:12.117,15.2 2 1
+mode: atomic
+mode: atomic
+mode: atomic
+mode: atomic
+cookbook/utils/env.go:6.42,7.40 1 2
+cookbook/utils/env.go:10.2,10.17 1 1
+cookbook/utils/env.go:7.40,9.3 1 1
