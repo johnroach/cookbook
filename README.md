@@ -1,5 +1,7 @@
 # cookbook
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/45fb61c8af604b7cb45679ad240fa4e0)](https://app.codacy.com/app/johnroach1985/cookbook?utm_source=github.com&utm_medium=referral&utm_content=johnroach/cookbook&utm_campaign=Badge_Grade_Dashboard)
+
 ## Development
 
 Download and install [protobuf](https://github.com/protocolbuffers/protobuf/releases)
