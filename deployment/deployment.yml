@@ -1,4 +1,18 @@
 ---
+kind: Service
+apiVersion: v1
+metadata:
+  name: cookbook
+spec:
+  selector:
+    app: cookbook
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
