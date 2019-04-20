@@ -16,17 +16,7 @@ type UTCFormatter struct {
 // (external lib) and returns the configuration struct.
 func Init(env string) error{
 	var err error
-	config = viper.New()
-	config.SetConfigType("yaml")
-	config.SetConfigName(env)
-	config.AddConfigPath("../config/")
-	config.AddConfigPath("config/")
-	config.AddConfigPath("/config/")
-	err = config.ReadInConfig()
-	if err != nil {
-		log.Errorf("error on parsing configuration file for %v", env)
-		return err
-	}
+	config = viper.GetViper()
 
 	// We allow override via environment variables
 	// The environment variables need to be prefixed with COOKBOOK_
@@ -38,11 +28,27 @@ func Init(env string) error{
 	config.SetEnvPrefix("cookbook")
 	config.AutomaticEnv()
 
-	if config.Get("DEBUG") == "true" {
+	if GetWithDefault("DEBUG", "true") == "true" {
 		log.SetLevel(log.DebugLevel)
 	}
 
-	if config.Get("DEPLOYMENT_TYPE") == "release" {
+	config.SetConfigType("yaml")
+	config.SetConfigName(env)
+	config.AddConfigPath("../config/")
+	config.AddConfigPath("config/")
+	config.AddConfigPath("/config/")
+	err = config.ReadInConfig()
+	if err != nil {
+		log.Errorf("error on parsing configuration file for %v", env)
+	} else {
+		// Allow hot reload of configuration
+		config.WatchConfig()
+		config.OnConfigChange(func(e fsnotify.Event) {
+			log.Infof("Config file reloaded for cookbook. %v", e.Name)
+		})
+	}
+
+	if GetWithDefault("DEPLOYMENT_TYPE", "release") == "release" {
 		log.SetFormatter(UTCFormatter{&log.JSONFormatter{
 			DisableTimestamp: false,
 		}})
@@ -53,19 +59,22 @@ func Init(env string) error{
 		}})
 	}
 
-	// Allow hot reload of configuration
-	config.WatchConfig()
-
-	config.OnConfigChange(func(e fsnotify.Event) {
-		log.Infof("Config file reloaded for cookbook. %v", e.Name)
-	})
-
 	return nil
 }
 
 // GetConfig returns the configurations set
 func GetConfig() *viper.Viper {
-	return config
+	return viper.GetViper()
+}
+
+// GetWithDefault sets default value if key isn't found in configuration
+func GetWithDefault(key string, defaultValue interface{}) interface{}{
+	c := GetConfig()
+	if !c.IsSet(key) {
+		c.SetDefault(key, defaultValue)
+		log.Infof("Couldn't find specified configuration. Setting default %s as %v", key, defaultValue)
+	}
+	return c.Get(key)
 }
 
 // Format formats the time for UTC

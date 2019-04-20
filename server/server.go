@@ -15,7 +15,7 @@ import (
 func Init() {
 	c := config.GetConfig()
 
-	lis, err := net.Listen("tcp",  ":"+ c.Get("PORT").(string))
+	lis, err := net.Listen("tcp",  ":"+ config.GetWithDefault("PORT", "8080").(string))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

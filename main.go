@@ -23,7 +23,7 @@ func main() {
 	err := config.Init(*environment)
 
 	if err != nil {
-		log.Fatal("Failed to set environment configs")
+		log.Error("Failed to set environment configs via file.")
 	}
 
 	// Initialize server
