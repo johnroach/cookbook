@@ -6,6 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// GreetingServer is defined for and used by the helloworld proto
 type GreetingServer struct{}
 
 // SayHello implements helloworld.GreeterServer

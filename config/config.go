@@ -8,6 +8,7 @@ import (
 
 var config *viper.Viper
 
+// UTCFormatter is a struct wrapping around log.Formatter
 type UTCFormatter struct {
 	log.Formatter
 }

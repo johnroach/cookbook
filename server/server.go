@@ -10,6 +10,7 @@ import (
 	"net"
 )
 
+// Initializes the service by pulling in the configurations and registering the GRPC servers
 func Init() {
 	c := config.GetConfig()
 
