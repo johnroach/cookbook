@@ -25,6 +25,7 @@ mkdir -p proto-gen/health; protoc -I model/proto model/proto/health.proto --go_o
 ### Technical References
   - [Health Probe for GRPC](https://github.com/grpc-ecosystem/grpc-health-probe)
   - [Testing GRPC](https://github.com/grpc/grpc-go/blob/master/Documentation/gomock-example.md)
+  https://github.com/golang-standards/project-layout
 
 ### Birds of the Feather
   - [How we build GRPC services at Namely?](https://medium.com/namely-labs/how-we-build-grpc-services-at-namely-52a3ae9e7c35)

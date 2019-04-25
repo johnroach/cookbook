@@ -14,7 +14,7 @@ type UTCFormatter struct {
 
 // Init is an exported method that takes the environment starts the viper
 // (external lib) and returns the configuration struct.
-func Init(env string) error{
+func Init(env string) error {
 	var err error
 	config = viper.GetViper()
 
@@ -55,7 +55,7 @@ func Init(env string) error{
 	} else {
 		log.SetFormatter(UTCFormatter{&log.TextFormatter{
 			DisableTimestamp: false,
-			FullTimestamp: true,
+			FullTimestamp:    true,
 		}})
 	}
 
@@ -68,7 +68,7 @@ func GetConfig() *viper.Viper {
 }
 
 // GetWithDefault sets default value if key isn't found in configuration
-func GetWithDefault(key string, defaultValue interface{}) interface{}{
+func GetWithDefault(key string, defaultValue interface{}) interface{} {
 	c := GetConfig()
 	if !c.IsSet(key) {
 		c.SetDefault(key, defaultValue)
