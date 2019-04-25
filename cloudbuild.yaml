@@ -8,7 +8,7 @@ steps:
       - 'test'
       - './...'
   - name: 'gcr.io/cloud-builders/docker'
-    id: 'buildPushDocker'
+    id: 'buildDocker'
     args:
       - 'build'
       - '-t'
@@ -20,6 +20,11 @@ steps:
       - '.'
     waitFor:
       - 'runTests'
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'pushDocker'
+    args:
+      - 'push'
+      - 'us.gcr.io/$PROJECT_ID/cookbook'
   - name: 'gcr.io/cloud-builders/kubectl'
       id: 'devGKEDeploy'
       args:
@@ -30,6 +35,4 @@ steps:
         - 'CLOUDSDK_CONTAINER_CLUSTER=dev-gke-cluster'
         - 'CLOUDSDK_COMPUTE_REGION=us-central1'
       waitFor:
-        - 'buildPushDocker'
-images:
-  - 'us.gcr.io/$PROJECT_ID/cookbook'
+        - 'pushDocker'
