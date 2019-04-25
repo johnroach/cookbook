@@ -1,0 +1,51 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: cookbook
+spec:
+  selector:
+    app: cookbook
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cookbook-deployment
+  labels:
+    app: cookbook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cookbook
+  template:
+    metadata:
+      labels:
+        app: cookbook
+    spec:
+      containers:
+      - name: cookbook
+        image: us.gcr.io/red-fa1ebe00/cookbook:latest
+        ports:
+          - containerPort: 8080
+        volumeMounts:
+          - name: config-volume
+            mountPath: /config
+        readinessProbe:
+          exec:
+            command: ["/go/bin/grpc_health_probe", "-addr=:8080"]
+          initialDelaySeconds: 5
+        livenessProbe:
+          exec:
+            command: ["/go/bin/grpc_health_probe", "-addr=:8080"]
+          initialDelaySeconds: 10
+      volumes:
+        - name: config-volume
+          configMap:
+            name: cookbook-config
