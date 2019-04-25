@@ -1,0 +1,22 @@
+steps:
+  - name: 'golang'
+    id: 'runTests'
+    env:
+      - 'GO111MODULE=on'
+    args:
+      - 'go'
+      - 'test'
+      - './...'
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'buildPushDocker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us.gcr.io/$PROJECT_ID/cookbook:$SHORT_SHA'
+      - '--build-arg'
+      - 'VERSION=$SHORT_SHA'
+      - '.'
+    waitFor:
+      - 'runTests'
+images:
+  - 'us.gcr.io/$PROJECT_ID/cookbook'
