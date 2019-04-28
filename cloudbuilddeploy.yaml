@@ -1,40 +1,40 @@
 steps:
-  - name: 'golang'
-    id: 'runTests'
+- name: 'golang'
+  id: 'runTests'
+  env:
+  - 'GO111MODULE=on'
+  args:
+  - 'go'
+  - 'test'
+  - './...'
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'buildDocker'
+  args:
+  - 'build'
+  - '-t'
+  - 'us.gcr.io/$PROJECT_ID/cookbook:$SHORT_SHA'
+  - '-t'
+  - 'us.gcr.io/$PROJECT_ID/cookbook:latest'
+  - '--build-arg'
+  - 'VERSION=$SHORT_SHA'
+  - '.'
+  waitFor:
+  - 'runTests'
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'pushDocker'
+  args:
+  - 'push'
+  - 'us.gcr.io/$PROJECT_ID/cookbook'
+- name: 'gcr.io/cloud-builders/kubectl'
+    id: 'devGKEDeploy'
+    args:
+    - 'apply'
+    - '-f'
+    - 'deployment/gke_deployment.yaml'
     env:
-      - 'GO111MODULE=on'
-    args:
-      - 'go'
-      - 'test'
-      - './...'
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'buildDocker'
-    args:
-      - 'build'
-      - '-t'
-      - 'us.gcr.io/$PROJECT_ID/cookbook:$SHORT_SHA'
-      - '-t'
-      - 'us.gcr.io/$PROJECT_ID/cookbook:latest'
-      - '--build-arg'
-      - 'VERSION=$SHORT_SHA'
-      - '.'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=dev-gke-cluster'
+    - 'CLOUDSDK_COMPUTE_REGION=us-central1'
     waitFor:
-      - 'runTests'
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'pushDocker'
-    args:
-      - 'push'
-      - 'us.gcr.io/$PROJECT_ID/cookbook'
-  - name: 'gcr.io/cloud-builders/kubectl'
-      id: 'devGKEDeploy'
-      args:
-        - 'apply'
-        - '-f'
-        - 'deployment/gke_deployment.yaml'
-      env:
-        - 'CLOUDSDK_CONTAINER_CLUSTER=dev-gke-cluster'
-        - 'CLOUDSDK_COMPUTE_REGION=us-central1'
-      waitFor:
-        - 'pushDocker'
+    - 'pushDocker'
 images:
   - 'us.gcr.io/$PROJECT_ID/cookbook'
