@@ -10,9 +10,16 @@ import (
 	"github.com/magefile/mage/sh"
 )
 
+// Build is to group build related tasks
 type Build mg.Namespace
+
+// Cloud is to group cloud related tasks
 type Cloud mg.Namespace
+
+// Run is to group tasks related to running the application
 type Run mg.Namespace
+
+// Test is to group tasks related to testing
 type Test mg.Namespace
 
 const (
@@ -100,7 +107,7 @@ func (Cloud) DockerTag() error {
 	return nil
 }
 
-// Docker builds, tags and pushes per cloud repo requirements
+// DockerPush builds, tags and pushes per cloud repo requirements
 func (Cloud) DockerPush() error {
 	mg.Deps(Cloud.DockerTag)
 
