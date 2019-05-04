@@ -5,6 +5,7 @@ package main
 import (
 	"log"
 	"os"
+	"text/template"
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
@@ -22,8 +23,21 @@ type Run mg.Namespace
 // Test is to group tasks related to testing
 type Test mg.Namespace
 
+// Deploy is to group tasks related to deployments
+type Deploy mg.Namespace
+
+// Clean is to group cleanup tasks
+type Clean mg.Namespace
+
+// K8sLocal is the data needed for a local/dev k8s deployment
+type K8sLocal struct {
+	ImageName string
+	Version   string
+}
+
 const (
 	cloudRepo = "us.gcr.io/shared-svcs-489885bd"
+	kubeCmd   = "kubectl"
 )
 
 // Bin builds the binary file. Usually used for development.
@@ -31,7 +45,7 @@ func (Build) Bin() error {
 	mg.Deps(Test.Unit)
 
 	log.Println("Building binary...")
-	if err := sh.Run(mg.GoCmd(), "build"); err != nil {
+	if err := sh.RunV(mg.GoCmd(), "build"); err != nil {
 		return err
 	}
 	return nil
@@ -42,7 +56,7 @@ func (Run) Dev() error {
 	mg.Deps(Test.Unit)
 
 	log.Println("Running service via binary...")
-	if err := sh.Run(mg.GoCmd(), "run", "main.go", "-e", "dev"); err != nil {
+	if err := sh.RunV(mg.GoCmd(), "run", "main.go", "-e", "dev"); err != nil {
 		return err
 	}
 	return nil
@@ -63,7 +77,7 @@ func (Run) DevDocker() error {
 	}
 
 	log.Println("Running docker container...")
-	if err := sh.Run("docker", "run", "-p", "8080:8080", "--mount", "type=bind,source="+currentDir+"/config,target=/config", "cookbook:"+version); err != nil {
+	if err := sh.RunV("docker", "run", "-p", "8080:8080", "--mount", "type=bind,source="+currentDir+"/config,target=/config", "cookbook:"+version); err != nil {
 		return err
 	}
 	return nil
@@ -79,7 +93,7 @@ func (Build) Docker() error {
 	}
 
 	log.Println("Bulding docker image...")
-	err = sh.Run("docker", "build", "-t", "cookbook:"+version, "--build-arg", "VERSION="+version, ".")
+	err = sh.RunV("docker", "build", "-t", "cookbook:"+version, "--build-arg", "VERSION="+version, ".")
 	if err != nil {
 		return nil
 	}
@@ -121,7 +135,7 @@ func (Cloud) DockerPush() error {
 	if err != nil {
 		return nil
 	}
-	err = sh.Run("docker", "push", cloudRepo+"/cookbook:latest")
+	err = sh.RunV("docker", "push", cloudRepo+"/cookbook:latest")
 	if err != nil {
 		return nil
 	}
@@ -131,7 +145,7 @@ func (Cloud) DockerPush() error {
 // Dep downloads dependencies
 func Dep() error {
 	log.Println("Downloading dependencies...")
-	if err := sh.Run(mg.GoCmd(), "mod", "download"); err != nil {
+	if err := sh.RunV(mg.GoCmd(), "mod", "download"); err != nil {
 		return err
 	}
 	return nil
@@ -149,9 +163,57 @@ func (Test) Unit() error {
 	mg.Deps(Dep)
 
 	log.Println("Running unit tests...")
-	if err := sh.Run(mg.GoCmd(), "test", "-v", "./..."); err != nil {
+	if err := sh.RunV(mg.GoCmd(), "test", "-v", "./..."); err != nil {
 		return err
 	}
+	return nil
+}
+
+// LocalK8s deploys to local k8s setup. NOT DONE!!
+func (Deploy) LocalK8s() error {
+	//mg.Deps(Build.Docker)
+
+	version, err := getVersion()
+	if err != nil {
+		return err
+	}
+
+	k8sData := K8sLocal{"cookbook", version}
+
+	// Creating deployment template
+	err = deploymentTemplate("deployment/local_deployment.yml", k8sData)
+	if err != nil {
+		return err
+	}
+
+	//make sure we are using local kubernetes (i.e. docker-desktop)
+	if err := sh.RunV(kubeCmd, "config", "use-context", "docker-desktop"); err != nil {
+		return err
+	}
+
+	sh.RunV(kubeCmd, "create", "configmap", "cookbook-config", "--from-file=config/dev.yaml")
+	// kubectl create configmap cookbook-config --from-file=config/dev.yaml || kubectl create configmap cookbook-config --from-file config/dev.yaml -o yaml --dry-run | kubectl replace -f -
+	// kubectl apply -f deployment/deployment.yml.tmp1
+
+	log.Println("Deploying to local kubernetes...")
+
+	return nil
+}
+
+// deploymentTemplate uses given data to generate a k8s deployment tmp file
+func deploymentTemplate(templatePath string, k8sData K8sLocal) error {
+
+	k8sTemp := template.Must(template.ParseFiles(templatePath))
+	deployment, err := os.Create(templatePath + ".tmp")
+
+	if err != nil {
+		return err
+	}
+	err = k8sTemp.Execute(deployment, k8sData)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
