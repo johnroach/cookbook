@@ -30,5 +30,5 @@ mkdir -p proto-gen/health; protoc -I model/proto model/proto/health.proto --go_o
 
 ### Birds of the Feather
 
-- [How we build GRPC services at Namely?](https://medium.com/namely-labs/how-we-build-grpc-services-at-namely-52a3ae9e7c35)
-- [Awesome GRPC - GRPC Ecosystem](https://github.com/grpc-ecosystem/awesome-grpc)
+-[How we build GRPC services at Namely?](https://medium.com/namely-labs/how-we-build-grpc-services-at-namely-52a3ae9e7c35)
+-[Awesome GRPC - GRPC Ecosystem](https://github.com/grpc-ecosystem/awesome-grpc)
