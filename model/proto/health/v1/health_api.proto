@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package health.v1;
+
+option csharp_namespace = "Health.V1";
+option go_package = "healthv1";
+option java_multiple_files = true;
+option java_outer_classname = "HealthApiProto";
+option java_package = "com.health.v1";
+option objc_class_prefix = "HXX";
+option php_namespace = "Health\\V1";
+
+// Health service is to determine the health of the GRPC application.
+service HealthAPI {
+    // Check checks health of the GRPC application and sends a response.
+    rpc Check(CheckRequest) returns (CheckResponse);
+}
+
+message CheckRequest {
+    string service = 1;
+}
+
+message CheckResponse {
+    // ServingStatus are different values which health check can respond with.
+    enum ServingStatus {
+        SERVING_STATUS_INVALID = 0;
+        SERVING_STATUS_SERVING = 1;
+        SERVING_STATUS_NOT_SERVING = 2;
+    }
+
+    ServingStatus status = 1;
+}

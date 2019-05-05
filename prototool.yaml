@@ -1,0 +1,11 @@
+protoc:
+  version: 3.7.1
+lint:
+  group: uber2
+
+create:
+  packages:
+    - directory: model/proto/health/v1
+      name: health
+    - directory: model/proto/helloworld/v1
+      name: helloworld

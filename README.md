@@ -8,12 +8,9 @@ Download and install [protobuf](https://github.com/protocolbuffers/protobuf/rele
 
 Run the following commands
 
-```bash
-go get -u google.golang.org/grpc
-go get -u github.com/golang/protobuf/protoc-gen-go
-```
 
-Generating code via proto files
+
+Generating code via proto files ( TODO: Move this work to magefile)
 
 ```bash
 mkdir -p proto-gen/helloworld; protoc -I model/proto model/proto/helloworld.proto --go_out=plugins=grpc:proto-gen/helloworld

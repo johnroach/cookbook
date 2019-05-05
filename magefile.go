@@ -148,22 +148,51 @@ func Dep() error {
 	if err := sh.RunV(mg.GoCmd(), "mod", "download"); err != nil {
 		return err
 	}
+
+	log.Println("Setting up GRPC...")
+	if err := sh.RunV("go", "get", "-u", "google.golang.org/grpc"); err != nil {
+		return err
+	}
+
+	log.Println("Setting up protobuf...")
+	if err := sh.RunV("go", "get", "-u", "github.com/golang/protobuf/protoc-gen-go"); err != nil {
+		return err
+	}
+
+	if err := sh.RunV("go", "get", "-u", "github.com/golang/protobuf/protoc-gen-go"); err != nil {
+		return err
+	}
+
+	// This could be more platform independent
+	var env = make(map[string]string)
+	env["GO111MODULE"] = "on"
+	if err := sh.RunWith(env, "go", "get", "github.com/uber/prototool/cmd/prototool@dev"); err != nil {
+		return err
+	}
+
 	return nil
 }
 
-// All runs all tests for this project
+// All runs all tests for this project including linting, unit tests
 func (Test) All() error {
-	mg.Deps(Test.Unit)
+	mg.Deps(Dep)
+	mg.SerialDeps(Test.ProtoLint, Test.Unit)
 
 	return nil
 }
 
 // Unit runs all unit tests for this project
 func (Test) Unit() error {
-	mg.Deps(Dep)
-
 	log.Println("Running unit tests...")
 	if err := sh.RunV(mg.GoCmd(), "test", "-v", "./..."); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (Test) ProtoLint() error {
+	log.Println("Running proto linting... (Thank you Uber!)...")
+	if err := sh.RunV("prototool", "lint"); err != nil {
 		return err
 	}
 	return nil
