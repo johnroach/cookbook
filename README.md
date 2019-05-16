@@ -4,7 +4,6 @@
 
 ## Development
 
-
 Install magefile:
 
 ```$bash
