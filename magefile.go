@@ -3,12 +3,12 @@
 package main
 
 import (
-	"log"
 	"os"
 	"text/template"
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
+	"github.com/sirupsen/logrus"
 )
 
 // Build is to group build related tasks
@@ -44,10 +44,17 @@ const (
 func (Build) Bin() error {
 	mg.Deps(Test.Unit)
 
-	log.Println("Building binary...")
-	if err := sh.RunV(mg.GoCmd(), "build"); err != nil {
+	logrus.Info("Building binary...")
+	if err := sh.RunV(mg.GoCmd(), "build", "-o", "build/cookbook"); err != nil {
 		return err
 	}
+
+	currentDir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	logrus.Infof("Binary build complete. You can find the binary at %v/build/cookbook", currentDir)
 	return nil
 }
 
@@ -55,7 +62,7 @@ func (Build) Bin() error {
 func (Run) Dev() error {
 	mg.Deps(Test.Unit)
 
-	log.Println("Running service via binary...")
+	logrus.Info("Running service via binary...")
 	if err := sh.RunV(mg.GoCmd(), "run", "main.go", "-e", "dev"); err != nil {
 		return err
 	}
@@ -76,7 +83,7 @@ func (Run) DevDocker() error {
 		return err
 	}
 
-	log.Println("Running docker container...")
+	logrus.Info("Running docker container...")
 	if err := sh.RunV("docker", "run", "-p", "8080:8080", "--mount", "type=bind,source="+currentDir+"/config,target=/config", "cookbook:"+version); err != nil {
 		return err
 	}
@@ -92,7 +99,7 @@ func (Build) Docker() error {
 		return err
 	}
 
-	log.Println("Bulding docker image...")
+	logrus.Info("Building docker images...")
 	err = sh.RunV("docker", "build", "-t", "cookbook:"+version, "--build-arg", "VERSION="+version, ".")
 	if err != nil {
 		return nil
@@ -109,7 +116,7 @@ func (Cloud) DockerTag() error {
 		return err
 	}
 
-	log.Println("Renaming docker image...")
+	logrus.Info("Renaming docker image...")
 	err = sh.Run("docker", "tag", "cookbook:"+version, cloudRepo+"/cookbook:"+version)
 	if err != nil {
 		return err
@@ -130,7 +137,7 @@ func (Cloud) DockerPush() error {
 		return err
 	}
 
-	log.Println("Pushing image to cloud repo...")
+	logrus.Info("Pushing image to cloud repo...")
 	err = sh.Run("docker", "push", cloudRepo+"/cookbook:"+version)
 	if err != nil {
 		return nil
@@ -144,7 +151,7 @@ func (Cloud) DockerPush() error {
 
 // Dep downloads dependencies
 func Dep() error {
-	log.Println("Downloading dependencies...")
+	logrus.Info("Downloading dependencies...")
 	if err := sh.RunV(mg.GoCmd(), "mod", "download"); err != nil {
 		return err
 	}
@@ -153,6 +160,7 @@ func Dep() error {
 
 // All runs all tests for this project
 func (Test) All() error {
+	logrus.Info("Running all tests...")
 	mg.Deps(Test.Unit)
 
 	return nil
@@ -162,7 +170,7 @@ func (Test) All() error {
 func (Test) Unit() error {
 	mg.Deps(Dep)
 
-	log.Println("Running unit tests...")
+	logrus.Info("Running unit tests...")
 	if err := sh.RunV(mg.GoCmd(), "test", "-v", "./..."); err != nil {
 		return err
 	}
@@ -195,7 +203,7 @@ func (Deploy) LocalK8s() error {
 	// kubectl create configmap cookbook-config --from-file=config/dev.yaml || kubectl create configmap cookbook-config --from-file config/dev.yaml -o yaml --dry-run | kubectl replace -f -
 	// kubectl apply -f deployment/deployment.yml.tmp1
 
-	log.Println("Deploying to local kubernetes...")
+	logrus.Info("Deploying to local kubernetes...")
 
 	return nil
 }
@@ -220,7 +228,7 @@ func deploymentTemplate(templatePath string, k8sData K8sLocal) error {
 // getVersion gets version of current commit.
 // This is used when coming up with a docker container tag or used for deployments
 func getVersion() (string, error) {
-	log.Println("Getting version...")
+	logrus.Info("Getting version...")
 	version, err := sh.Output("git", "rev-parse", "--short=7", "HEAD")
 	if err != nil {
 		return "", err

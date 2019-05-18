@@ -1,5 +1,6 @@
 *.tmp
 .vscode
+build
 ### macOS ###
 # General
 .DS_Store

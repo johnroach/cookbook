@@ -21,6 +21,23 @@ cd mage
 go run bootstrap.go
 ```
 
+You can view what build options are available via:
+
+```$bash
+$ mage -l
+Targets:
+  build:bin           builds the binary file.
+  build:docker        builds the docker container
+  cloud:dockerPush    builds, tags and pushes per cloud repo requirements
+  cloud:dockerTag     builds, names and tags per cloud repo requirements
+  dep                 downloads dependencies
+  deploy:localK8s     deploys to local k8s setup.
+  run:dev             does a quick run for a dev environment.
+  run:devDocker       runs the locally built docker tagged with current version where version is pulled from git log
+  test:all            runs all tests for this project
+  test:unit           runs all unit tests for this project
+```
+
 Download and install [protobuf](https://github.com/protocolbuffers/protobuf/releases)
 
 Run the following commands
