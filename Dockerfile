@@ -1,4 +1,4 @@
-FROM golang:1.12-stretch as builder
+FROM golang:1.12 as builder
 
 # Pulling in the health probe
 # You can read more about it here https://github.com/grpc-ecosystem/grpc-health-probe
