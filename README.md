@@ -6,7 +6,6 @@
 
 Install magefile:
 
-
 ```$bash
 go get -u -d github.com/magefile/mage
 cd $GOPATH/src/github.com/magefile/mage
