@@ -1,5 +1,5 @@
 *.tmp
-
+.vscode
 ### macOS ###
 # General
 .DS_Store

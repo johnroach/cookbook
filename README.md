@@ -4,6 +4,22 @@
 
 ## Development
 
+Install magefile:
+
+```$bash
+go get -u -d github.com/magefile/mage
+cd $GOPATH/src/github.com/magefile/mage
+go run bootstrap.go
+```
+
+or do:
+
+```$bash
+git clone https://github.com/magefile/mage
+cd mage
+go run bootstrap.go
+```
+
 Download and install [protobuf](https://github.com/protocolbuffers/protobuf/releases)
 
 Run the following commands
